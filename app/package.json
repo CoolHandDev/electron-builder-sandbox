@@ -1,0 +1,13 @@
+{
+  "name": "builder",
+  "version": "1.0.0",
+  "description": "sandbox for electron-builder",
+  "main": "main.js",
+  "homepage": "www.github.com/",
+  "author": "test test <test@test.com>",
+  "license": "ISC",
+   "dependencies": {
+    "electron-auto-updater": "^0.6.0",
+    "electron-debug": "^1.1.0"
+  }
+}
