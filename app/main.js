@@ -58,6 +58,13 @@ function execAPICmd(cmd) {
     goprog.stdin.write(cmd + "\n");    
 }
 
+
+/*
+    When packaging application using electron-builder or electron-packager and using asar, child_process spawn
+    cannot be used.  Instead use execFile.  This means we cannot make use of realtime stdout and stdin interaction
+    with the executable.   So only option to communicate between Electron and the exe is through http (REST), 
+    WebSockets, or gRPC. 
+*/
 function startAPI() {
     var commandPath = path.normalize(__dirname + '\\bin\\' + 'fake-backend.exe');
     //var commandPath = path.normalize( 'C:\\Dev\\desktop\\electron-builder-sandbox\\build'+ '\\bin\\' + 'fake-backend');
