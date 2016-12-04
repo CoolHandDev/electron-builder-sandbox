@@ -2,6 +2,7 @@ const {app, BrowserWindow, ipcMain} = require('electron')
 const path = require('path')
 const url = require('url')
 const spawn = require('child_process').spawn;
+const childExec = require('child_process').execFile;
 const readline = require('readline');
 var goprog = {};
 
@@ -12,7 +13,9 @@ function launchMainWin() {
     mainWin.webContents.openDevTools()
     mainWin.maximize();
 
-    console.log(path.normalize(__dirname + '\\bin\\'));        
+    console.log(path.normalize(__dirname + '\\bin\\'));
+
+    console.log(process.resourcesPath);        
 
     mainWin.loadURL(url.format({
        pathname: path.join(__dirname, 'index.html'),
@@ -25,7 +28,7 @@ function launchMainWin() {
     //handle messages from the renderer
     ipcMain.on('channel1', function(event, arg) {
         //console.log(event, arg);
-        execAPICmd(arg);
+        //execAPICmd(arg);
     });
 
     mainWin.on('closed', () => {
@@ -41,8 +44,8 @@ app.on('activate', () => {
     }
 });
 
-app.on('window-all-closed', () => {
-    if (process.platform == 'darwin') {
+app.on('window-all-closed', () => {    
+    if (process.platform !== 'darwin') {
         app.quit();
     }
 });
@@ -56,17 +59,26 @@ function execAPICmd(cmd) {
 }
 
 function startAPI() {
-    var commandPath = path.normalize(__dirname + '\\bin\\' + 'fake-backend');
+    var commandPath = path.normalize(__dirname + '\\bin\\' + 'fake-backend.exe');
     //var commandPath = path.normalize( 'C:\\Dev\\desktop\\electron-builder-sandbox\\build'+ '\\bin\\' + 'fake-backend');
     console.log(commandPath);
 
+    /*
     if (process.platform == 'win32') {
         //goprog = spawn('cmd.exe', ['/c', 'scanf']);
         goprog = spawn('cmd.exe', ['/c', commandPath]);
     } else {
         goprog = spawn(commandPath);
-    }
+    }*/
     
+    goprog = childExec(commandPath, (error, stdout, stderr) => {
+        if (error) {
+            throw error;
+        }
+        console.log(stdout);
+    })
+    
+    /*
     goprog.stdin.setEncoding = 'utf-8';
 
     goprog.stdout.on('data', (data) => {
@@ -86,5 +98,5 @@ function startAPI() {
 
     goprog.on('exit', (exitcode) => {
         console.log('exit code:', exitcode);
-    });
+    });*/
 }
